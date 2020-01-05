@@ -28,6 +28,27 @@ class TextField(PositionedElement):
         text = text + '^FS'
         return text
 
+    def sanitise(self, char):
+        if self.hex_indicator:
+            if char == "_" or char == "^" or char == "~":
+                return "_" + '{: 02x}'.format(char)
+            elif char == "\\":
+                return " "
+
+        else:
+            if char == "_" or char == "^" or char == "\\":
+                return " "
+
+        if char == '\n':
+            if self.new_line_conversion.name == 'Empty':
+                return ""
+            elif self.new_line_conversion.name == 'Space':
+                return " "
+            elif self.new_line_conversion.name == 'NewLine':
+                return "\\&"
+
+        return char
+
 
 class FieldBlock(TextField):
     def __init__(self, text, x, y, width, font, max_line_count=1, line_space=0, text_justification="L",
